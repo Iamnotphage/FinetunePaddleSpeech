@@ -144,12 +144,14 @@ cd ../../
 > `num_snapshots` 可以调整用于多保存些模型，可查看合成效果（loss 指标不是唯一标准，并且训练步数太多也可能过拟合）
 > `frozen_layers` 数据量比较小的情况下可以冻结一些层的参数，通常冻结与输入近的层
 
+`epoch`在调用`finetune.py`的时候传入了参数。
+
 ---
 
 在目录`PaddleSpeech/examples/other/tts_finetune/tts3`下
 
 ```bash
-./run.sh
+./run.sh # finetune.py 传参 epoch 100
 ```
 
 建议详细阅读`run.sh`，它会执行`local/`下的几个python脚本:
@@ -166,6 +168,8 @@ cd ../../
 
 `finetune.py`: 执行实际的微调训练过程。加载配置文件和数据,构建FastSpeech2模型,设置优化器和训练参数。支持冻结指定层、多GPU训练、定期保存快照等功能。训练过程中会在`exp/`目录下保存模型检查点。
 
+
+
 微调之后的模型在`examples/other/exp/default/checkpoints/`内，有多个模型(.pdz)以及记录所有模型的路径和迭代次数的文件`records.jsonl`
 
 ---
@@ -176,6 +180,42 @@ cd ../../
 
 测试生成的文件在`examples/other/tts_finetune/tts3/test_e2e/xxx.wav`
 
+
+---
+
+以上是官方demo的例子，能跑成功代表环境没有问题。
+
+注意跑的时候监控一下GPU显存的占用，调节`batch_size`
+
+### 社区数据集
+
+需要准备`.wav`格式的数据集，以及对应的拼音数据集
+
+目前找到的开源的数据集大部分是游戏角色语音包:
+
+[鸣潮语音数据集](https://www.modelscope.cn/datasets/aihobbyist/WutheringWaves_Dataset)
+
+这个数据量还可以，解压之后大概占用`9.6GB`
+
+针对每个角色收集了`.wav`和对应的文本(`.lab`格式)
+
+需要把中文转能够微调处理的拼音数据，这个`paddlespeech`自带工具
+
+这个部分叫做`Grapheme-to-Phoneme` 字素->音素
+
+```python
+from paddlespeech.t2s.frontend.zh_frontend import Frontend
+
+# 初始化
+frontend = Frontend()
+
+# 转换
+text = "你好"
+phonemes = frontend.get_phonemes(text, merge_sentences=True)
+print(phonemes)  # [['n', 'i2', 'h', 'ao3']]
+```
+
+这部分目前还没做。
 
 ## 遇到的问题
 
