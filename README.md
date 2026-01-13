@@ -61,6 +61,8 @@ conda install aistudio-sdk==0.2.6
 
 ### conda导入环境
 
+这里是自动创建环境
+
 设置`environmnet.yml`最后一行的路径为本机安装conda的路径
 
 ```bash
@@ -131,7 +133,7 @@ cd ../../
 
 默认的`-1`代表`batch_size`是64，可以根据显存来调整这个参数。
 
-以及`num_snapshots`设置会定期保存模型到磁盘，默认保存5个。
+以及`num_snapshots`设置会定期保存模型到磁盘，默认保存`5`个。
 
 以及可以设置冻结层`frozen_layers`(模型的所有层在`/conf/fastspeech2_layers.txt`)
 
@@ -187,6 +189,14 @@ cd ../../
 
 注意跑的时候监控一下GPU显存的占用，调节`batch_size`
 
+运行微调的时候可以用自带的visualDL可视化数据:
+
+在`examples/other/tts_finetune/tts3`目录下:
+
+```bash
+visualdl --logdir exp/default --port 8080
+```
+
 ### 社区数据集
 
 需要准备`.wav`格式的数据集，以及对应的拼音数据集
@@ -215,7 +225,16 @@ phonemes = frontend.get_phonemes(text, merge_sentences=True)
 print(phonemes)  # [['n', 'i2', 'h', 'ao3']]
 ```
 
-这部分目前还没做。
+---
+
+后续进行微调模型要注意，`run.sh`前面的步骤已经不需要了。(第四个步骤会自动写入一个假的`records.jsonl`，只是为了确保环境配置正确)
+
+先删除`exp/default`再执行:
+
+```bash
+rm -rf exp/default
+./run.sh --stage 5 --stop_stage 6 # finetune & synthesizes
+```
 
 ## 遇到的问题
 
