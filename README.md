@@ -246,6 +246,7 @@ ln -snf ~/miniconda3/envs/paddle/lib/libopenblas.so.0 ~/PaddleSpeech/examples/ot
 
 # 确保动态库路径
 export LD_LIBRARY_PATH=~/miniconda3/envs/paddle/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=~/miniconda3/envs/paddle/lib/python3.10/site-packages/nvidia/cu13/lib:$LD_LIBRARY_PATH
 ```
 
 然后再执行`./run.sh`
