@@ -235,10 +235,12 @@ python process.py
 
 ./run.sh --stage 0 --stop_stage 3
 
-./run.sh --stage 4 --stop_stage 4 # 准备环境，复制预训练模型
+./run.sh --stage 4 --stop_stage 4 # 准备环境，复制预训练模型 run only once.
 
 ./run.sh --stage 5 --stop_stage 6 # finetune & synthesizes
 ```
+
+后续如果需要在当前epoch上继续训练，就不需要再执行第四个阶段了，因为第四个阶段会复制预训练的模型，把`records.jsonl`重写
 
 ## 遇到的问题
 
