@@ -209,20 +209,15 @@ visualdl --logdir exp/default --port 8080
 
 针对每个角色收集了`.wav`和对应的文本(`.lab`格式)
 
-需要把中文转能够微调处理的拼音数据，这个`paddlespeech`自带工具
-
-这个部分叫做`Grapheme-to-Phoneme` 字素->音素
+需要把中文转能够微调处理的拼音数据，可以用python官方的`pypinyin`库
 
 ```python
-from paddlespeech.t2s.frontend.zh_frontend import Frontend
+from pypinyin import pinyin, Style
 
-# 初始化
-frontend = Frontend()
-
-# 转换
-text = "你好"
-phonemes = frontend.get_phonemes(text, merge_sentences=True)
-print(phonemes)  # [['n', 'i2', 'h', 'ao3']]
+>>> print(pinyin('原神', style=Style.TONE3))
+[['yuan2'], ['shen1']] # 注意一定要Style.TONE3
+# 还需要注意轻声比如de要转成de5, n2要转成en2
+# 以便check_oov.py脚本检验
 ```
 
 ---
@@ -233,6 +228,15 @@ print(phonemes)  # [['n', 'i2', 'h', 'ao3']]
 
 ```bash
 rm -rf exp/default
+
+# 预处理数据集（以上述数据集的今汐的角色语音包为例)
+# 已经改名000001.wav : 000001.lab
+python process.py
+
+./run.sh --stage 0 --stop_stage 3 # 注意不要执行第四个阶段
+
+# 检查mfa_results文件夹的text grid
+
 ./run.sh --stage 5 --stop_stage 6 # finetune & synthesizes
 ```
 
@@ -263,7 +267,7 @@ MFA（Montreal Forced Aligner）因为缺失或冲突的 libopenblas 库导致�
 conda install -c conda-forge openblas
 ln -snf ~/miniconda3/envs/paddle/lib/libopenblas.so.0 ~/PaddleSpeech/examples/other/tts_finetune/tts3/tools/montreal-forced-aligner/lib/thirdparty/bin/libopenblas.so.0 # 注意路径 不一定照抄
 
-# 确保动态库路径
+# 确保动态库路径 (或者添加到run.sh中)
 export LD_LIBRARY_PATH=~/miniconda3/envs/paddle/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=~/miniconda3/envs/paddle/lib/python3.10/site-packages/nvidia/cu13/lib:$LD_LIBRARY_PATH
 ```
