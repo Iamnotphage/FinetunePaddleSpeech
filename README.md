@@ -222,7 +222,7 @@ from pypinyin import pinyin, Style
 
 ---
 
-后续进行微调模型要注意，`run.sh`前面的步骤已经不需要了。(第四个步骤会自动写入一个假的`records.jsonl`，只是为了确保环境配置正确)
+后续进行微调模型要注意，这里demo生成的checkpoints会影响后续微调
 
 先删除`exp/default`再执行:
 
@@ -233,9 +233,9 @@ rm -rf exp/default
 # 已经改名000001.wav : 000001.lab
 python process.py
 
-./run.sh --stage 0 --stop_stage 3 # 注意不要执行第四个阶段
+./run.sh --stage 0 --stop_stage 3
 
-# 检查mfa_results文件夹的text grid
+./run.sh --stage 4 --stop_stage 4 # 准备环境，复制预训练模型
 
 ./run.sh --stage 5 --stop_stage 6 # finetune & synthesizes
 ```
