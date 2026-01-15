@@ -56,7 +56,7 @@ pip install . -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 ```bash
 conda install -c conda-forge ccache
-conda install aistudio-sdk==0.2.6
+pip install aistudio-sdk==0.2.6
 ```
 
 ### conda导入环境
